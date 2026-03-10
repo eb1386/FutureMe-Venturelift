@@ -8,7 +8,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
+    <link rel="icon" href="
+    https://images.squarespace-cdn.com/content/v1/690ce620a851f31c1c67d887/1fa5ad78-459d-4174-8f27-3ee49b73bb4c/favicon.ico?format=100w" type="image/x-icon">
     <style>
+        
         :root {
             --saints-red: #cc092f;
             --bg-dark: #000;
@@ -191,6 +194,9 @@
             border-left: 4px solid rgba(255,255,255,0.5);
             padding-left: clamp(16px, 3vw, 24px);
         }
+        a, a:hover, a:visited, a:active {
+  text-decoration: none;
+}
 
         /* ══ BACK TO TOP ══ */
         .back-to-top {
@@ -261,6 +267,11 @@
         /* ══ DESKTOP OVERRIDES ══ */
         @media (min-width: 769px) {
             .footer-columns { grid-template-columns: repeat(4, 1fr); }
+        }
+        .dec{
+            
+        text-decoration: none;
+
         }
     </style>
 </head>
@@ -338,37 +349,47 @@
 <footer class="black-footer" id="footer">
     <div class="footer-top">
         <div class="footer-brand">
-            <img src="venture.png" alt="VentureLift" class="ven">
+            <a href = "https://www.venturelift.org/#intro">
+                <img src="venture.png" alt="VentureLift" class="ven">
+            </a>
             <p>A personal finance summer program for ambitious youth in grades 7–9, designed around life's biggest milestones.</p>
         </div>
         <div class="footer-columns">
             <div class="footer-col">
-                <h4>Program</h4>
-                <a href="#">Curriculum Overview</a>
-                <a href="#">Key Dates</a>
-                <a href="#">Tuition &amp; Aid</a>
+                <a href="#">
+                    <h4>Program</h4>
+                </a>
+                <a href="https://www.venturelift.org/program">How to Apply</a>
+                <a href="https://www.venturelift.org/apply">Eligibility</a>
+                <a href="https://www.venturelift.org/faqs">FAQ</a>
             </div>
             <div class="footer-col">
-                <h4>Admissions</h4>
-                <a href="#">How to Apply</a>
-                <a href="#">Eligibility</a>
-                <a href="#">FAQ</a>
+                <a href="#">
+                    <h4>People</h4>
+                </a>
+                <a href="https://www.venturelift.org/experts">Industry Leaders</a>
+                <a href="https://www.venturelift.org/leadership">Executive Leadership</a>
             </div>
             <div class="footer-col">
-                <h4>Contact</h4>
-                <a href="#">Email Us</a>
-                <a href="#">Information Sessions</a>
-                <a href="#">Campus Map</a>
+                <a href="#">
+                    <h4>Contact</h4>
+                </a>
+                <a href="https://www.venturelift.org/contact">Direct Contact</a>
+                <a href="https://www.venturelift.org/apply">Apply</a>
             </div>
             <div class="footer-col">
-                <h4>Legal</h4>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <a href="#">
+                    <h4>Legal</h4>
+                </a>
+                <a href="https://static1.squarespace.com/static/690ce620a851f31c1c67d887/t/691b795b3409972cbc5443fd/1763408219638/PRIVACY+POLICY.pdf">Privacy Policy</a>
+                <a href="https://static1.squarespace.com/static/690ce620a851f31c1c67d887/t/691b795b3409972cbc5443fd/1763408219638/PRIVACY+POLICY.pdf">Copyright</a>
             </div>
         </div>
     </div>
     <div class="footer-bottom">
-        <span class="footer-copyright">&copy; 2025–2026 VentureLift &mdash; St. George's School. All rights reserved.</span>
+        <a href="https://www.stgeorges.bc.ca">
+            <span class="footer-copyright dec" style="text-decoration:none;">&copy; 2025–2026 VentureLift &mdash; St. George's School. All rights reserved.</span>
+        </a>
         <span class="footer-credits">Designed by Dylan Duan '28 &amp; Thomas Li '28</span>
     </div>
 </footer>
