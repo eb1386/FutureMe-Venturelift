@@ -4,76 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FutureMe at VentureLift</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!--
+        Fonts:
+        – Inter          → body copy, UI labels, nav
+        – Abril Fatface  → "Apply" heading  (matches the heavy serif of "FutureMe" in the logo)
+        – Playfair Display Italic → "Now." heading  (matches the calligraphic "at" in the logo)
+    -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Abril+Fatface&family=Playfair+Display:ital,wght@1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- GSAP + ScrollTrigger for all animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
-    <link rel="icon" href="
-    https://images.squarespace-cdn.com/content/v1/690ce620a851f31c1c67d887/1fa5ad78-459d-4174-8f27-3ee49b73bb4c/favicon.ico?format=100w" type="image/x-icon">
-    <style>
-        
-        :root {
-            --saints-red: #cc092f;
-            --bg-dark: #000;
-            --font-main: 'Helvetica Neue', Helvetica, 'Inter', sans-serif;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { font-family: var(--font-main); background: var(--bg-dark); color: #fff; overflow-x: hidden; }
+    <link rel="icon" href="https://images.squarespace-cdn.com/content/v1/690ce620a851f31c1c67d887/1fa5ad78-459d-4174-8f27-3ee49b73bb4c/favicon.ico?format=100w" type="image/x-icon">
 
-        /* ══ HERO ══ */
+    <style>
+        /* ─────────────────────────────────────
+           TOKENS
+        ───────────────────────────────────── */
+        :root {
+            --red:  #cc092f;
+            --dark: #000;
+            --font: 'Helvetica Neue', Helvetica, 'Inter', sans-serif;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html  { scroll-behavior: smooth; }
+        body  { font-family: var(--font); background: var(--dark); color: #fff; overflow-x: hidden; }
+        a, a:visited, a:hover, a:active { text-decoration: none; }
+
+
+        /* ─────────────────────────────────────
+           HERO
+           Grid: row 1 = top text · row 2 = logo (fills remaining height) · row 3 = bottom bar
+           Grid guarantees zero overlap between text and logo at every viewport size.
+        ───────────────────────────────────── */
         .hero {
-            position: relative; height: 100svh; width: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative;
+            height: 100svh; width: 100%;
+            display: grid;
+            grid-template-rows: 1fr auto;
             overflow: hidden;
         }
+
+        /* Background photo */
         .hero-bg {
             position: absolute; inset: 0;
             background-image: url('./Background.png');
             background-size: cover; background-position: center; z-index: 0;
         }
-        .hero-top-text {
-            position: absolute; top: clamp(20px, 4.2vw, 40px);
-            text-align: center; font-size: clamp(0.55rem, 1.6vw, 0.8rem); z-index: 10;
-            line-height: 1.6; color: rgba(255,255,255,.9); font-weight: 700;
-            padding: 0 clamp(16px, 4vw, 40px); width: 100%;
+        /* Darkening vignette — heavy at top & bottom, clear in the middle */
+        .hero-bg::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(180deg,
+                rgba(0,0,0,.72) 0%,
+                rgba(0,0,0,0)   28%,
+                rgba(0,0,0,0)   66%,
+                rgba(0,0,0,.65) 100%);
         }
-        .logo-container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; }
+
+        /* Row 1 — logo block, vertically centred */
+        .logo-container {
+            position: relative; z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
         .red-box {
-            background-color: rgba(204,9,47,.85);
-            padding: clamp(12px,3vw,18px) clamp(16px,4vw,30px) clamp(10px,2.5vw,14px);
+            background-color: rgba(204,9,47,.92);
+            padding: clamp(12px,3vw,20px) clamp(18px,5vw,36px) clamp(10px,2.5vw,16px);
             display: flex; align-items: center; justify-content: center;
         }
-        .hero-logo { width: clamp(220px, 70vw, 750px); display: block; }
+        .hero-logo { width: clamp(200px,62vw,700px); display: block; }
+
+        /* Partner logos below the red box */
         .sub-logos {
             display: flex; align-items: center; justify-content: center;
-            gap: clamp(16px, 4vw, 30px); margin-top: clamp(12px, 3vw, 18px);
+            gap: clamp(14px,3.5vw,28px); margin-top: clamp(12px,2.2vw,18px);
         }
-        .sub-logos img { object-fit: contain; }
-        .logo-saint   { height: clamp(50px, 10vw, 90px); width: auto; }
-        .logo-venture { height: clamp(80px, 16vw, 150px); width: auto; }
-        .sub-logos-divider { width: 1px; height: clamp(44px, 9vw, 80px); background: rgba(255,255,255,.5); }
-        .hero-bottom-links {
-            position: absolute; bottom: clamp(20px, 4.2vw, 40px);
-            display: flex; gap: clamp(10px, 3vw, 40px);
-            font-size: clamp(0.55rem, 1.5vw, 0.8rem); z-index: 10;
-            justify-content: center; padding: 0 clamp(12px, 3vw, 20px);
-            width: 100%; flex-wrap: nowrap;
+        .sub-logos img   { object-fit: contain; }
+        .logo-saint      { height: clamp(40px,8vw,76px);   width: auto; transition: opacity .25s; }
+        .logo-venture    { height: clamp(68px,13vw,128px); width: auto; transition: opacity .25s; }
+        .logo-saint:hover,
+        .logo-venture:hover { opacity: .75; }
+        .sub-logos-divider { width: 1px; height: clamp(36px,7vw,66px); background: rgba(255,255,255,.32); }
+
+        /* Row 3 — bottom bar: left link | scroll chevron | right link */
+        .hero-bottom {
+            position: relative; z-index: 10;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: clamp(14px,2.5vw,28px) clamp(20px,5vw,52px) clamp(18px,3.5vw,32px);
+            gap: 12px;
         }
-        .hero-bottom-links a {
-            color: #fff; text-decoration: none; font-weight: 700;
+        .hero-bottom a {
+            color: #fff; font-weight: 700;
+            font-size: clamp(.55rem,1.3vw,.75rem);
+            letter-spacing: .04em; opacity: .88; white-space: nowrap;
             display: inline-flex; align-items: center; gap: 4px;
-            transition: transform .35s cubic-bezier(.34,1.56,.64,1);
-            white-space: nowrap;
+            transition: opacity .25s, transform .32s cubic-bezier(.34,1.56,.64,1);
         }
-        .link-left:hover  { transform: translateX(-6px); }
-        .link-down:hover  { transform: translateY(6px); }
-        .link-right:hover { transform: translateX(6px); }
+        .hero-bottom a:hover          { opacity: 1; }
+        .link-left:hover              { transform: translateX(-5px); }
+        .link-right:hover             { transform: translateX(5px); }
 
-        .section-divider { width: 100%; height: clamp(20px, 4vw, 40px); background: #000; position: relative; z-index: 3; }
+        /* Floating scroll chevron */
+        .scroll-cue {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            cursor: pointer; opacity: .55; transition: opacity .4s; flex-shrink: 0;
+            animation: float-cue 2.6s ease-in-out infinite;
+        }
+        .scroll-cue:hover { opacity: 1; }
+        .scroll-cue svg   { width: 18px; height: 18px; stroke: #fff; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .scroll-cue span  { font-size: .5rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+        @keyframes float-cue { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
 
-        /* ══ INTRO / TYPEWRITER ══ */
+
+        /* ─────────────────────────────────────
+           SECTION SEPARATOR
+           1 px gradient line — visible edge, no hard chop
+        ───────────────────────────────────── */
+        .sep {
+            width: 100%; height: 1px; position: relative; z-index: 10;
+            background: linear-gradient(90deg, transparent, rgba(204,9,47,.45) 20%, rgba(204,9,47,.45) 80%, transparent);
+        }
+
+
+        /* ─────────────────────────────────────
+           INTRO — PINNED QUESTIONS SECTION
+        ───────────────────────────────────── */
         .intro-section {
-            position: relative; background: var(--saints-red);
+            position: relative; background: var(--red);
             height: 100svh; width: 100%; overflow: hidden; z-index: 2;
         }
         .sticky-visuals {
@@ -82,201 +141,268 @@
             position: relative; overflow: hidden;
         }
 
-        /* ══ NAV BAR — horizontal strip pinned to top on mobile, vertical on desktop ══ */
-
-        /* MOBILE: fixed strip at top of intro section */
-        .custom-scrollbar-container {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 48px; width: 100%;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 100; overflow: hidden;
-            background: rgba(0,0,0,0.25);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-            mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
-        }
-        .scrollbar-text-track {
-            writing-mode: horizontal-tb;
-            white-space: nowrap;
+        /*
+           TICKER BANNER
+           Pure CSS infinite marquee — no JS needed for the loop.
+           The track holds 4 identical copies of all labels so the
+           belt is always wider than any screen and wraps invisibly.
+           translateX animates from 0 → -25% (one full copy width),
+           then snaps back to 0 — seamless circle at every size.
+           On scroll entry, JS adds .js-paused, freezes position via
+           inline style, and GSAP centres the active label instead.
+        */
+        .ticker-wrap {
+            position: absolute; top: 0; left: 0; right: 0;
+            height: 56px; overflow: hidden;
+            background: rgba(0,0,0,.20);
             display: flex; align-items: center;
-            font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
-            color: rgba(255,255,255,0.6);
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
-            will-change: transform;
-        }
-        .nav-item {
-            display: inline-block; transition: all 0.5s ease;
-            padding: 0 12px; font-weight: 700; letter-spacing: 2px;
-            font-size: 0.7rem; color: rgba(255,255,255,0.5);
-            white-space: nowrap;
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .nav-item:hover { color: rgba(255,255,255,0.85); }
-        .nav-item.active {
-            color: #fff; font-weight: 900; letter-spacing: 3px;
-            text-shadow: 0 0 18px rgba(255,255,255,1), 0 0 40px rgba(255,180,180,0.7);
-            transform: scale(1.15);
+            z-index: 100;
+            /* soft fade at both edges */
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+                    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
         }
 
-        /* DESKTOP: vertical strip on right side */
-        @media (min-width: 769px) {
-            .custom-scrollbar-container {
-                position: absolute;
-                right: 40px; top: 25vh; left: auto;
-                height: 50vh; width: 30px;
-                background: transparent;
-                flex-direction: column;
-                -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-                mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-            }
-            .scrollbar-text-track {
-                writing-mode: vertical-rl;
-                display: block;
-                font-size: 0.75rem;
-            }
-            .nav-item { padding: 8px 0; font-size: 0.75rem; }
-            .nav-item.active { font-size: 0.9rem; transform: scale(1.25); }
+        /* The scrolling belt — four copies of the label set */
+        .ticker-track {
+            display: flex; align-items: center;
+            white-space: nowrap; will-change: transform;
+            animation: marquee-belt 22s linear infinite;
+        }
+        /* Paused by JS on scroll enter; current translateX frozen inline */
+        .ticker-track.js-paused { animation: none; }
+
+        /*
+           Each "copy" is 25 % of the total track width, so
+           translateX(-25%) = exactly one full set scrolled off to the left.
+           The animation loops back to 0 instantly — no gap possible.
+        */
+        @keyframes marquee-belt {
+            0%   { transform: translateX(-25%); }
+            100% { transform: translateX(-50%); }
         }
 
-        /* Typewriter */
-        .typewriter-stage {
+        .ticker-item {
+            font-size: clamp(.82rem,1.2vw,1rem); font-weight: 800; letter-spacing: .2em;
+            color: rgba(255,255,255,.28); padding: 0 clamp(24px,4vw,52px);
+            text-transform: uppercase; white-space: nowrap; cursor: default;
+            display: inline-block; flex-shrink: 0;
+            transition: color .42s, text-shadow .42s, transform .42s;
+        }
+        /* Active / lit state — synced to current question */
+        .ticker-item.lit {
+            color: #fff;
+            text-shadow: 0 0 24px rgba(255,255,255,.95), 0 0 56px rgba(255,110,110,.5);
+            transform: scale(1.1);
+        }
+        .ticker-sep {
+            color: rgba(255,255,255,.13); font-size: .55rem;
+            padding: 0 4px; user-select: none;
+            display: inline-block; flex-shrink: 0;
+        }
+
+        /* Large question text, centred vertically in the section */
+        .question-stage {
             position: absolute; inset: 0;
             display: flex; align-items: center; justify-content: flex-start;
-            padding: 64px clamp(20px,8vw,120px) 0 clamp(20px,6vw,60px);
-            overflow: hidden;
+            padding: 70px clamp(20px,7vw,90px) 20px clamp(20px,5vw,52px);
+            overflow: hidden; pointer-events: none;
         }
-        @media (min-width: 769px) {
-            .typewriter-stage {
-                padding: clamp(60px,10vw,120px) clamp(20px,8vw,120px) 0 clamp(20px,6vw,60px);
-                transform: rotate(-2deg);
-            }
-        }
-        .typewriter-text {
-            font-size: clamp(1.8rem, 7vw, 8rem);
-            font-weight: 900; line-height: 1.1; letter-spacing: -1px;
+        #questionText {
+            font-size: clamp(2rem,7.5vw,8rem); font-weight: 900;
+            line-height: 1.04; letter-spacing: -1px;
             color: #fff; text-transform: uppercase;
-            word-break: break-word; max-width: 90vw; text-align: left;
+            word-break: break-word; text-align: left; max-width: 86vw;
+            will-change: opacity, transform, filter;
         }
-        @media (min-width: 769px) {
-            .typewriter-text { letter-spacing: -2px; line-height: 1.05; }
-        }
-        .typewriter-text::after {
-            content: '|'; display: inline-block; color: #fff;
-            animation: blink .8s step-end infinite; margin-left: 6px;
+        @media (min-width:769px) { #questionText { letter-spacing:-2px; max-width:70vw; } }
+
+        /* Blinking cursor appended after each question */
+        #questionText::after {
+            content: '|'; display: inline-block; color: rgba(255,255,255,.4);
+            animation: blink .85s step-end infinite; margin-left: 6px;
         }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-        /* ══ PINNED COPY SECTION ══ */
+
+        /* ─────────────────────────────────────
+           COPY SECTION
+        ───────────────────────────────────── */
         .content-section {
-            position: relative; background: var(--saints-red);
-            width: 100%; height: 100svh;
-            overflow: hidden; z-index: 3;
+            position: relative; background: var(--red);
+            width: 100%; z-index: 3; overflow: hidden;
         }
         .content-inner {
-            position: absolute; inset: 0;
+            min-height: 100svh;
             display: flex; flex-direction: column;
             align-items: flex-start; justify-content: center;
-            padding: 0 clamp(24px, 10vw, 10vw); gap: clamp(32px, 6vw, 60px);
+            padding: clamp(56px,8vw,96px) clamp(28px,10vw,120px);
+            gap: clamp(24px,3.5vw,48px);
         }
+        /* Small eyebrow label */
+        .copy-accent {
+            font-size: clamp(.58rem,.95vw,.7rem); font-weight: 700;
+            letter-spacing: .24em; text-transform: uppercase;
+            color: rgba(255,255,255,.38);
+        }
+        /*
+           Word-split reveal — each word is wrapped in a clipping outer span
+           so the inner span can rise up from below (ReactBits SplitText pattern).
+        */
+        .split-word       { display: inline-block; overflow: hidden; vertical-align: bottom; margin-right: .28em; }
+        .split-word-inner { display: inline-block; transform: translateY(110%); opacity: 0; will-change: transform, opacity; }
+
+        /* Primary copy — large, bold */
         .copy-line-1 {
-            font-size: clamp(1.3rem, 3.5vw, 3.4rem);
-            font-weight: 900; line-height: 1.1; letter-spacing: -0.5px;
-            color: #fff; max-width: 820px;
-            opacity: 0; transform: translateY(30px);
+            font-size: clamp(1.5rem,3.8vw,3.6rem); font-weight: 900;
+            line-height: 1.2; letter-spacing: -.3px; color: #fff; max-width: 840px;
         }
+        /* Secondary copy — lighter, smaller */
         .copy-line-2 {
-            font-size: clamp(0.9rem, 1.8vw, 1.5rem);
-            font-weight: 400; line-height: 1.7;
-            color: rgba(255,255,255,0.85); max-width: 700px;
-            opacity: 0; transform: translateY(30px);
-            border-left: 4px solid rgba(255,255,255,0.5);
-            padding-left: clamp(16px, 3vw, 24px);
+            font-size: clamp(1rem,2vw,1.6rem); font-weight: 400;
+            line-height: 1.75; color: rgba(255,255,255,.7); max-width: 760px;
         }
-        a, a:hover, a:visited, a:active {
-  text-decoration: none;
-}
 
-        /* ══ BACK TO TOP ══ */
-        .back-to-top {
-            position: fixed; bottom: clamp(20px, 4vw, 36px); right: clamp(20px, 4vw, 36px);
-            z-index: 9999; background: var(--saints-red); color: #fff; border: none;
-            width: clamp(44px, 8vw, 52px); height: clamp(44px, 8vw, 52px);
-            border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 20px rgba(204,9,47,0.5);
-            opacity: 0; pointer-events: none;
-            transform: translateY(16px);
-            transition: opacity 0.5s ease, transform 0.5s ease, background 0.2s ease;
+        /* ReactBits Spotlight Card wrapping copy-line-2 */
+        .spotlight-card {
+            position: relative; max-width: 720px; width: 100%;
+            border-radius: 14px; overflow: hidden;
+            background: rgba(0,0,0,.14);
+            border: 1px solid rgba(255,255,255,.07);
+            padding: clamp(24px,3.5vw,40px) clamp(22px,3vw,36px);
+            transition: border-color .35s;
         }
-        .back-to-top.visible { opacity: 1; pointer-events: all; transform: translateY(0); }
-        .back-to-top:hover { background: #ff1a3e; box-shadow: 0 6px 28px rgba(204,9,47,0.75); transform: translateY(-3px); }
-        .back-to-top svg { width: 20px; height: 20px; stroke: #fff; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        /* The radial spotlight follows the cursor via CSS custom props set by JS */
+        .spotlight-card::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+            background: radial-gradient(500px circle at var(--mx,50%) var(--my,50%),
+                rgba(255,255,255,.06) 0%, transparent 70%);
+            opacity: 0; transition: opacity .4s;
+        }
+        .spotlight-card:hover::before  { opacity: 1; }
+        .spotlight-card:hover          { border-color: rgba(255,255,255,.15); }
+        .spotlight-card-inner          { position: relative; z-index: 1; }
 
-        /* ══ FOOTER ══ */
+
+        /* ─────────────────────────────────────
+           APPLY NOW SECTION
+        ───────────────────────────────────── */
+        .apply-section {
+            position: relative; background: var(--dark);
+            width: 100%; z-index: 4; overflow: hidden;
+        }
+        /* Subtle dot grid texture */
+        .apply-section::before {
+            content: ''; position: absolute; inset: 0; z-index: 0;
+            background-image: radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        /* Red upward glow from the bottom */
+        .apply-section::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: min(1000px,130vw); height: 480px; z-index: 0; pointer-events: none;
+            background: radial-gradient(ellipse at 50% 100%, rgba(204,9,47,.32) 0%, transparent 68%);
+        }
+        .apply-inner {
+            position: relative; z-index: 1;
+            min-height: 100svh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            padding: clamp(80px,12vw,140px) clamp(24px,8vw,80px);
+        }
+
+        /*
+           "Apply Now." — two-word typographic statement matching the logo's dual-font system:
+           "Apply" → Abril Fatface  (same ultra-heavy serif family as "FutureMe" / "VentureLift" in the logo)
+           "Now."  → Playfair Display Bold Italic  (same calligraphic italic as "at" in the logo)
+        */
+        .apply-heading {
+            font-size: clamp(5rem,14vw,15rem);
+            line-height: .9;
+            display: flex; flex-direction: column; align-items: center;
+            gap: .04em;
+            margin-bottom: clamp(28px,4vw,48px);
+        }
+        .apply-word-apply {
+            font-family: 'Abril Fatface', serif;
+            font-weight: 400; /* Abril Fatface is already maximum weight */
+            color: #fff; display: block; letter-spacing: -.02em;
+        }
+        .apply-word-now {
+            font-family: 'Playfair Display', serif;
+            font-style: italic; font-weight: 900;
+            color: var(--red); display: block;
+            font-size: .8em; letter-spacing: .01em;
+        }
+
+        /* Body copy under heading */
+        .apply-sub {
+            font-size: clamp(.9rem,1.5vw,1.15rem); font-weight: 400;
+            line-height: 1.75; color: rgba(255,255,255,.46); max-width: 460px;
+            margin-bottom: clamp(32px,4.5vw,52px);
+        }
+        /* Primary CTA — white rect, turns red on hover */
+        .apply-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: #fff; color: #000;
+            font-family: var(--font); font-weight: 800;
+            font-size: clamp(.78rem,1.1vw,.9rem);
+            letter-spacing: .1em; text-transform: uppercase;
+            padding: clamp(14px,1.8vw,18px) clamp(32px,4.5vw,56px);
+            border-radius: 2px;
+            transition: background .22s, color .22s, transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s;
+            margin-bottom: clamp(14px,2vw,20px);
+        }
+        .apply-btn:hover {
+            background: var(--red); color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(204,9,47,.4);
+        }
+        .apply-btn svg { width:14px; height:14px; stroke:currentColor; stroke-width:2.5; fill:none; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+
+        /* Secondary text link */
+        .apply-learn {
+            font-size: clamp(.6rem,.9vw,.68rem); font-weight: 700; letter-spacing: .16em;
+            text-transform: uppercase; color: rgba(255,255,255,.22);
+            transition: color .25s; display: inline-block;
+        }
+        .apply-learn:hover { color: rgba(255,255,255,.65); }
+
+
+        /* ─────────────────────────────────────
+           FOOTER
+        ───────────────────────────────────── */
         .black-footer {
-            background: var(--bg-dark);
-            padding: clamp(16px, 2.5vw, 22px) clamp(24px, 5vw, 60px);
-            position: relative; z-index: 4;
-            border-top: 1px solid #1a1a1a;
+            background: var(--dark); position: relative; z-index: 8;
+            padding: clamp(16px,2.5vw,24px) clamp(24px,5vw,60px);
+            border-top: 1px solid #181818;
         }
-        .footer-inner {
-            width: 100%;
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 16px; flex-wrap: wrap;
-        }
-        .footer-left {
-            display: flex; align-items: center; gap: 16px;
-        }
-        .footer-logo {
-            height: 28px; width: auto;
-            filter: brightness(0) invert(1);
-            display: block; transition: opacity 0.3s ease;
-            opacity: 0.9;
-        }
-        .footer-logo:hover { opacity: 1; }
-        .footer-divider { width: 1px; height: 14px; background: #222; }
-        .footer-copy {
-            font-size: 0.6rem; color: #fff; letter-spacing: 1.5px;
-            text-transform: uppercase; white-space: nowrap;
-        }
-        .footer-right {
-            display: flex; align-items: center; gap: 20px;
-        }
-        .footer-credits {
-            font-size: 0.6rem; color: #fff; letter-spacing: 1px;
-            text-transform: uppercase; white-space: nowrap;
-        }
-        .footer-legal {
-            font-size: 0.6rem; color: #fff; text-decoration: none;
-            letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap;
-            position: relative; transition: color 0.25s ease;
-        }
-        .footer-legal::after {
-            content: ''; position: absolute; bottom: -2px; left: 0; right: 0;
-            height: 1px; background: #444;
-            transform: scaleX(0); transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-        .footer-legal:hover { color: #888; }
-        .footer-legal:hover::after { transform: scaleX(1); }
+        .footer-inner   { width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+        .footer-left    { display:flex; align-items:center; gap:16px; }
+        .footer-right   { display:flex; align-items:center; gap:20px; }
+        .footer-logo    { height:26px; width:auto; filter:brightness(0) invert(1); display:block; transition:opacity .3s; opacity:.8; }
+        .footer-logo:hover { opacity:1; }
+        .footer-divider { width:1px; height:14px; background:#222; }
+        .footer-copy,
+        .footer-credits { font-size:.58rem; color:rgba(255,255,255,.6); letter-spacing:1.4px; text-transform:uppercase; white-space:nowrap; }
+        .footer-legal   { font-size:.58rem; color:rgba(255,255,255,.5); letter-spacing:1.4px; text-transform:uppercase; white-space:nowrap; position:relative; transition:color .25s; }
+        .footer-legal::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:1px; background:rgba(255,255,255,.2); transform:scaleX(0); transform-origin:left; transition:transform .3s; }
+        .footer-legal:hover        { color:#fff; }
+        .footer-legal:hover::after { transform:scaleX(1); }
+
     </style>
 </head>
 <body>
 
-<button class="back-to-top" id="backToTop" aria-label="Back to top">
-    <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-</button>
-
-<!-- ══ HERO ══ -->
+<!-- ═══════════════════════════════════════════════════
+     HERO
+     Full-viewport opening screen. Grid keeps the
+     top descriptor and logo in separate rows so they
+     can never overlap at any screen size.
+════════════════════════════════════════════════════ -->
 <section id="hero" class="hero">
     <div class="hero-bg"></div>
-    <div class="hero-top-text">
-        Introducing Your Personal Finance Summer Program<br>
-        Designed Around Life's Biggest Milestones &amp; Challenges<br>
-        By St. George's School &bull; Now Calling All Ambitious Youth Grades 7–9 Everywhere
-    </div>
+
+    <!-- Row 1: FutureMe logo + partner logos, centred in full viewport height -->
     <div class="logo-container">
         <div class="red-box">
             <img src="future.png" alt="FutureMe at VentureLift" class="hero-logo">
@@ -291,49 +417,114 @@
             </a>
         </div>
     </div>
-    <div class="hero-bottom-links">
+
+    <!-- Row 3: Bottom navigation bar -->
+    <div class="hero-bottom">
         <a href="https://www.venturelift.org/program" class="link-left">← Read the Official Announcement</a>
-        <a href="#intro" class="link-down">Learn More ↓</a>
+        <div class="scroll-cue" id="scrollCue"
+             onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">
+            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            <span>Scroll</span>
+        </div>
         <a href="https://pci.jotform.com/form/253201293592252" class="link-right">Send in Your Application Today →</a>
     </div>
 </section>
 
-<div class="section-divider"></div>
+<div class="sep"></div>
 
-<!-- ══ INTRO / TYPEWRITER ══ -->
+<!-- ═══════════════════════════════════════════════════
+     INTRO — PINNED QUESTIONS
+     Pinned full-viewport section. As the user scrolls,
+     GSAP cycles through six financial questions. The
+     ticker banner above is synced: it auto-scrolls via
+     CSS marquee when idle, then JS snaps the active
+     label to centre when scrolling begins.
+════════════════════════════════════════════════════ -->
 <section id="intro" class="intro-section">
     <div class="sticky-visuals">
-        <div class="custom-scrollbar-container">
-            <div class="scrollbar-text-track">
-                <span class="nav-item active">NEW CAR</span> &nbsp;&mdash;&nbsp;
-                <span class="nav-item">CLOTHES</span> &nbsp;&mdash;&nbsp;
-                <span class="nav-item">TAX CREDIT</span> &nbsp;&mdash;&nbsp;
-                <span class="nav-item">OPTIMIZE</span> &nbsp;&mdash;&nbsp;
-                <span class="nav-item">RENT OR BUY</span> &nbsp;&mdash;&nbsp;
-                <span class="nav-item">MORTGAGE</span>
-            </div>
+
+        <!-- Ticker banner — labels auto-rotate then snap to active question -->
+        <div class="ticker-wrap">
+            <div class="ticker-track" id="tickerTrack"></div>
         </div>
-        <div class="typewriter-stage">
-            <div class="typewriter-text" id="typewriter"></div>
+
+        <!-- Question text — blur-fades between each question -->
+        <div class="question-stage">
+            <div id="questionText"></div>
         </div>
+
     </div>
 </section>
 
-<div class="section-divider"></div>
+<div class="sep"></div>
 
-<!-- ══ PINNED COPY ══ -->
+<!-- ═══════════════════════════════════════════════════
+     COPY SECTION
+     Two paragraphs revealed word-by-word as the user
+     scrolls into view (ReactBits SplitText pattern).
+     The second paragraph lives inside a Spotlight Card
+     (also from ReactBits) — a glass panel whose radial
+     highlight follows the cursor.
+════════════════════════════════════════════════════ -->
 <section id="copy-section" class="content-section">
     <div class="content-inner">
-        <p class="copy-line-1">
+
+        <span class="copy-accent" id="copyAccent">Why It Matters</span>
+
+        <p class="copy-line-1" id="copyLine1">
             These are all questions about personal finance that seem daunting to someone who's just starting to handle being self-reliant for the first time.
         </p>
-        <p class="copy-line-2">
-            And they're important questions too — financial freedom is a skill that needs to be trained from very early on — far before you ever land a job or get your first cheque.
-        </p>
+
+        <!-- Spotlight Card (ReactBits) — cursor-tracking radial glow -->
+        <div class="spotlight-card" id="spotlightCard">
+            <div class="spotlight-card-inner">
+                <p class="copy-line-2" id="copyLine2">
+                    And they're important questions too — financial freedom is a skill that needs to be trained from very early on — far before you ever land a job or get your first cheque.
+                </p>
+            </div>
+        </div>
+
     </div>
 </section>
 
-<!-- ══ FOOTER ══ -->
+<!-- ═══════════════════════════════════════════════════
+     APPLY NOW
+     Dark section. The heading uses the same dual-font
+     system as the logo: Abril Fatface for "Apply",
+     Playfair Display Bold Italic for "Now." — mirroring
+     the "FutureMe" + "at" type pairing in the logo.
+════════════════════════════════════════════════════ -->
+<section id="apply" class="apply-section">
+    <div class="apply-inner">
+
+        <!-- Typographic headline -->
+        <div class="apply-heading" id="applyHeading">
+            <span class="apply-word-apply">Apply</span>
+            <span class="apply-word-now">Now.</span>
+        </div>
+
+        <!-- Short descriptor copy -->
+        <p class="apply-sub" id="applySub">
+            A three-day personal finance summer program — equipping you with the knowledge to make confident money decisions for life.
+        </p>
+
+        <!-- Primary CTA -->
+        <a href="https://pci.jotform.com/form/253201293592252" class="apply-btn" id="applyBtn">
+            Send In Your Application
+            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+
+        <!-- Secondary text link -->
+        <a href="https://www.venturelift.org/program" class="apply-learn" id="applyLearn">
+            Read the full program details →
+        </a>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════ -->
 <footer class="black-footer" id="footer">
     <div class="footer-inner">
         <div class="footer-left">
@@ -344,181 +535,220 @@
             <span class="footer-copy">&copy; 2025–2026 St. George's School</span>
         </div>
         <div class="footer-right">
-            <span class="footer-credits">Designed by Dylan Duan '28 &amp; Thomas Li '28</span>
+            <span class="footer-credits">Designed by Dylan Duan '28, Thomas Li '28 &amp; Evan Borodow '29</span>
             <div class="footer-divider"></div>
-            <a href="https://static1.squarespace.com/static/690ce620a851f31c1c67d887/t/691b795b3409972cbc5443fd/1763408219638/PRIVACY+POLICY.pdf" class="footer-legal">Legal</a>
+            <a href="https://static1.squarespace.com/static/690ce620a851f31c1c67d887/t/691b795b3409972cbc5443fd/1763408219638/PRIVACY+POLICY.pdf"
+               class="footer-legal">Legal</a>
         </div>
     </div>
 </footer>
 
+
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
-/* ── Hero load animation — slower ── */
-gsap.timeline({ defaults: { ease: "power3.out" } })
-    .from(".hero-bg",   { scale: 1.15, duration: 3.5, ease: "power2.out" })
-    .from(".red-box",   { scaleY: 0, transformOrigin: "bottom center", duration: 1.8, ease: "expo.inOut" }, "-=2.8")
-    .from(".hero-logo", { y: 60, opacity: 0, duration: 1.6, ease: "back.out(1.2)" }, "-=1.2")
-    .from(".sub-logos", { y: 24, opacity: 0, duration: 1.2, ease: "power2.out" }, "-=0.9")
-    .from([".hero-top-text",".hero-bottom-links"], { y: 18, opacity: 0, duration: 1.4, stagger: 0.3 }, "-=1.0");
+/* ═══════════════════════════════════════════════════
+   HERO ENTRANCE
+   Staggered reveal on page load.
+════════════════════════════════════════════════════ */
+gsap.timeline({ defaults:{ ease:"power3.out" } })
+    .from(".hero-bg",       { scale:1.1,  duration:2.8, ease:"power2.out" })
+    .from(".red-box",       { scaleY:0, transformOrigin:"bottom center", duration:1.6, ease:"expo.inOut" }, "-=2.3")
+    .from(".hero-logo",     { y:44, opacity:0, duration:1.4, ease:"back.out(1.2)" }, "-=1.0")
+    .from(".sub-logos",     { y:18, opacity:0, duration:1.0 }, "-=0.75")
+    .from(".hero-bottom a", { y:14, opacity:0, duration:0.9, stagger:0.18 }, "-=0.7")
+    .from(".scroll-cue",    { opacity:0, duration:0.7 }, "-=0.5");
 
-/* ── Typewriter questions ── */
+/* Fade out the scroll chevron once the user starts scrolling */
+window.addEventListener('scroll', function h() {
+    if (window.scrollY > 40) {
+        gsap.to('#scrollCue', { opacity:0, duration:0.5,
+            onComplete:() => document.getElementById('scrollCue').style.pointerEvents = 'none' });
+        window.removeEventListener('scroll', h);
+    }
+}, { passive:true });
+
+
+/* ═══════════════════════════════════════════════════
+   TICKER + QUESTIONS
+   
+   The ticker uses a CSS marquee (translateX 0 → -25%)
+   over 4 identical copies of the label set, so the belt
+   is always wider than any screen and the loop is gapless.
+   
+   On scroll entry: JS pauses the CSS animation, freezes the
+   current translateX, then GSAP translates the whole track
+   to centre the active label — same visual result, no rAF.
+════════════════════════════════════════════════════ */
 const QUESTIONS = [
-    "How do I save up for a new car?",
-    "How much can I splurge on these clothes today?",
-    "What is a tax credit?",
-    "How do I optimize my tax credits?",
-    "Should I rent, buy, or mortgage my home?",
-    "Is right now even a good time to get a mortgage?"
+    { label:"NEW CAR",     text:"How do I save up for a new car?" },
+    { label:"CLOTHES",     text:"How much can I splurge on these clothes today?" },
+    { label:"TAX CREDIT",  text:"What is a tax credit?" },
+    { label:"OPTIMIZE",    text:"How do I optimize my tax credits?" },
+    { label:"RENT OR BUY", text:"Should I rent, buy, or mortgage my home?" },
+    { label:"MORTGAGE",    text:"Is right now even a good time to get a mortgage?" },
 ];
-const TOTAL    = QUESTIONS.length;
-const navItems = document.querySelectorAll('.nav-item');
-const typeEl   = document.getElementById('typewriter');
+const TOTAL = QUESTIONS.length;
 
-let currentIdx  = -1;
-let typeTimer   = null;
-let deleteTimer = null;
-
-function cancelAll() { clearTimeout(typeTimer); clearTimeout(deleteTimer); }
-
-function typeIn(idx, onDone) {
-    const text = QUESTIONS[idx];
-    let pos = 0;
-    typeEl.textContent = '';
-    function tick() {
-        pos++;
-        typeEl.textContent = text.slice(0, pos);
-        if (pos < text.length) typeTimer = setTimeout(tick, 55);
-        else if (onDone) onDone();
-    }
-    tick();
-}
-
-function deleteOut(onDone) {
-    let text = typeEl.textContent;
-    function tick() {
-        text = text.slice(0, -1);
-        typeEl.textContent = text;
-        if (text.length > 0) deleteTimer = setTimeout(tick, 22);
-        else if (onDone) onDone();
-    }
-    tick();
-}
-
-function showQuestion(idx) {
-    if (idx === currentIdx) return;
-    cancelAll();
-    navItems.forEach((item, i) => item.classList.toggle('active', i === idx));
-    const prev = currentIdx;
-    currentIdx = idx;
-    if (prev === -1 || typeEl.textContent === '') {
-        typeIn(idx);
-    } else {
-        deleteOut(() => { typeTimer = setTimeout(() => typeIn(idx), 180); });
-    }
-}
-
-/* ── Nav item click ── */
-navItems.forEach((item, idx) => {
-    item.addEventListener('click', () => {
-        const st = ScrollTrigger.getById('intro-trigger');
-        if (!st) return;
-        const targetProgress = (idx + 0.01) / TOTAL;
-        const scrollStart = st.start;
-        const scrollEnd   = st.end;
-        const targetScroll = scrollStart + (scrollEnd - scrollStart) * targetProgress;
-        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-    });
-});
-
-
-const introTl = gsap.timeline({
-    scrollTrigger: {
-        id: 'intro-trigger',
-        trigger: "#intro",
-        pin: true,
-        start: "top top",
-        end: `+=${TOTAL * 180}%`,
-        scrub: 0.6,
-        onEnter:     () => showQuestion(0),
-        onLeaveBack: () => showQuestion(0),
-        onUpdate: (self) => {
-            const idx = Math.min(TOTAL - 1, Math.floor(self.progress * TOTAL));
-            showQuestion(idx);
-        }
-    }
-});
-
-let mm = gsap.matchMedia();
-
-/* DESKTOP: scroll track vertically */
-mm.add("(min-width: 769px)", () => {
-    const track     = document.querySelector('.scrollbar-text-track');
-    const container = document.querySelector('.custom-scrollbar-container');
-    requestAnimationFrame(() => {
-        const containerMid = container.offsetHeight / 2;
-        const positions = [];
-        let cumY = 0;
-        Array.from(track.children).forEach(child => {
-            if (child.classList.contains('nav-item')) {
-                positions.push(cumY + child.offsetHeight / 2);
-            }
-            cumY += child.offsetHeight;
+/*
+   Build the track: 4 copies of the label set.
+   Copy 1 (the second copy) sits in the visual centre at the CSS
+   animation start offset, so both sides of the banner are always
+   filled — no empty left gap from frame 1.
+*/
+const track = document.getElementById('tickerTrack');
+(function() {
+    let h = '';
+    for (let copy = 0; copy < 4; copy++) {
+        QUESTIONS.forEach((q, i) => {
+            h += `<span class="ticker-item" data-idx="${i}" data-copy="${copy}">${q.label}</span>`;
+            h += `<span class="ticker-sep">&mdash;</span>`;
         });
-        const startY = containerMid - positions[0];
-        const endY   = containerMid - positions[TOTAL - 1];
-        gsap.set(track, { y: startY });
-        introTl.to(track, { y: endY, ease: "none", duration: 6 }, 0);
-    });
-});
+    }
+    track.innerHTML = h;
+})();
 
-/* MOBILE: scroll track horizontally */
-mm.add("(max-width: 768px)", () => {
-    const track     = document.querySelector('.scrollbar-text-track');
-    const container = document.querySelector('.custom-scrollbar-container');
-    requestAnimationFrame(() => {
-        const containerMid = container.offsetWidth / 2;
-        const navEls = Array.from(track.querySelectorAll('.nav-item'));
-        let cumX = 0;
-        const positions = [];
-        navEls.forEach(el => {
-            positions.push(cumX + el.offsetWidth / 2);
-            let sib = el.nextSibling;
-            while (sib && !sib.classList?.contains('nav-item')) {
-                cumX += sib.offsetWidth || 0;
-                sib = sib.nextSibling;
-            }
-            cumX += el.offsetWidth;
-        });
-        const startX = containerMid - positions[0];
-        const endX   = containerMid - positions[TOTAL - 1];
-        gsap.set(track, { x: startX });
-        introTl.to(track, { x: endX, ease: "none", duration: 6 }, 0);
-    });
-});
+/*
+   Use copy-1 items for snap math — they sit in the centre of the
+   visible window at the CSS animation's initial offset position.
+*/
+const tickerItems = Array.from(track.querySelectorAll('.ticker-item[data-copy="1"]'));
+let jsScrollMode = false;
 
-/* ── Copy section ── */
-const copyTl = gsap.timeline({
-    scrollTrigger: {
-        trigger: "#copy-section",
-        pin: true,
-        start: "top top",
-        end: "+=350%",
-        scrub: 0.6,
+/* Light up every copy of the active label */
+function setLit(idx) {
+    track.querySelectorAll('.ticker-item').forEach(el =>
+        el.classList.toggle('lit', +el.dataset.idx === idx));
+}
+
+/*
+   Snap: read the live computed translateX (works mid-CSS-animation
+   or when GSAP already owns it), then slide so item[idx] is centred.
+*/
+function snapTicker(idx, animate) {
+    setLit(idx);
+    const wrap     = track.parentElement;
+    const wrapMid  = wrap.offsetWidth / 2;
+    const el       = tickerItems[idx];
+    const mat      = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+    const curX     = mat.m41;
+    const itemCentre = el.offsetLeft + el.offsetWidth / 2 + curX;
+    const targetX    = curX + (wrapMid - itemCentre);
+    if (animate) gsap.to(track,  { x: targetX, duration:0.55, ease:"power3.out" });
+    else         gsap.set(track, { x: targetX });
+}
+
+function activateScrollMode(idx) {
+    if (jsScrollMode) return;
+    jsScrollMode = true;
+    /* Capture live translateX before killing the CSS animation */
+    const mat = new DOMMatrixReadOnly(getComputedStyle(track).transform);
+    track.classList.add('js-paused');
+    gsap.set(track, { x: mat.m41 });
+    snapTicker(idx, true);
+}
+
+/* Question text */
+const qEl = document.getElementById('questionText');
+let curIdx = -1, qAnim = null;
+
+function showQ(idx) {
+    if (idx === curIdx) return;
+    const first = curIdx === -1;
+    curIdx = idx;
+
+    if (!jsScrollMode) activateScrollMode(idx);
+    else               snapTicker(idx, true);
+
+    if (qAnim) qAnim.kill();
+    if (first || !qEl.textContent) {
+        qEl.textContent = QUESTIONS[idx].text;
+        qAnim = gsap.fromTo(qEl,
+            { opacity:0, y:28, filter:'blur(8px)' },
+            { opacity:1, y:0,  filter:'blur(0px)', duration:0.6, ease:"power2.out" });
+        return;
+    }
+    qAnim = gsap.timeline()
+        .to(qEl, {
+            opacity:0, y:-20, filter:'blur(10px)', duration:0.2, ease:"power2.in",
+            onComplete:() => { qEl.textContent = QUESTIONS[idx].text; }
+        })
+        .fromTo(qEl,
+            { opacity:0, y:28, filter:'blur(10px)' },
+            { opacity:1, y:0,  filter:'blur(0px)', duration:0.36, ease:"power2.out" });
+}
+
+/* ScrollTrigger pin */
+gsap.timeline({
+    scrollTrigger:{
+        id:'intro-trigger', trigger:'#intro', pin:true,
+        start:'top top', end:`+=${TOTAL * 20}%`, scrub:0.4,
+        onEnter:     () => showQ(0),
+        onLeaveBack: () => {
+            /* Reset — CSS animation takes back over */
+            curIdx = -1; jsScrollMode = false;
+            gsap.set(track, { clearProps:'transform' });
+            track.classList.remove('js-paused');
+            track.querySelectorAll('.ticker-item').forEach(el => el.classList.remove('lit'));
+        },
+        onUpdate: s  => showQ(Math.min(TOTAL-1, Math.floor(s.progress * TOTAL)))
     }
 });
-copyTl.to(".copy-line-1", { opacity: 1, y: 0, duration: 2.5, ease: "power2.out" }, 0);
-copyTl.to(".copy-line-2", { opacity: 1, y: 0, duration: 2.5, ease: "power2.out" }, 2.5);
 
-/* ── Back to top ── */
-const backBtn = document.getElementById('backToTop');
+
+/* ═══════════════════════════════════════════════════
+   COPY SECTION — word-split reveal (ReactBits SplitText)
+════════════════════════════════════════════════════ */
+function splitWords(el) {
+    const text = el.innerText.trim();
+    el.innerHTML = '';
+    text.split(/\s+/).forEach(word => {
+        const outer = document.createElement('span'); outer.className = 'split-word';
+        const inner = document.createElement('span'); inner.className = 'split-word-inner';
+        inner.textContent = word;
+        outer.appendChild(inner);
+        el.appendChild(outer);
+    });
+    return Array.from(el.querySelectorAll('.split-word-inner'));
+}
+
+const accentEl = document.getElementById('copyAccent');
+gsap.set(accentEl, { opacity:0, y:18 });
+ScrollTrigger.create({ trigger:accentEl, start:"top 88%",
+    onEnter:() => gsap.to(accentEl, { opacity:1, y:0, duration:0.7, ease:"power3.out" }) });
+
+const l1 = splitWords(document.getElementById('copyLine1'));
+gsap.set(l1, { y:'110%', opacity:0 });
+ScrollTrigger.create({ trigger:'#copyLine1', start:"top 85%",
+    onEnter:() => gsap.to(l1, { y:'0%', opacity:1, duration:0.7, ease:"power3.out", stagger:0.04 }) });
+
+gsap.set('#spotlightCard', { opacity:0, y:28 });
+ScrollTrigger.create({ trigger:'#spotlightCard', start:"top 88%",
+    onEnter:() => gsap.to('#spotlightCard', { opacity:1, y:0, duration:0.8, ease:"power3.out" }) });
+
+const l2 = splitWords(document.getElementById('copyLine2'));
+gsap.set(l2, { y:'110%', opacity:0 });
+ScrollTrigger.create({ trigger:'#spotlightCard', start:"top 82%",
+    onEnter:() => gsap.to(l2, { y:'0%', opacity:1, duration:0.65, ease:"power3.out", stagger:0.03 }) });
+
+/* Spotlight Card — cursor-tracking radial glow (ReactBits) */
+const card = document.getElementById('spotlightCard');
+card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', ((e.clientX - r.left) / r.width  * 100).toFixed(1) + '%');
+    card.style.setProperty('--my', ((e.clientY - r.top)  / r.height * 100).toFixed(1) + '%');
+});
+
+
+/* ═══════════════════════════════════════════════════
+   APPLY SECTION — staggered scroll-reveal
+════════════════════════════════════════════════════ */
+const applyEls = ['#applyHeading','#applySub','#applyBtn','#applyLearn'];
+gsap.set(applyEls, { opacity:0, y:36 });
 ScrollTrigger.create({
-    trigger: "#footer",
-    start: "top bottom",
-    onEnter:     () => backBtn.classList.add('visible'),
-    onLeaveBack: () => backBtn.classList.remove('visible')
+    trigger:'#apply', start:"top 75%",
+    onEnter:() => gsap.to(applyEls, { opacity:1, y:0, duration:0.85, ease:"power3.out", stagger:0.12 })
 });
-backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
 </body>
 </html>
