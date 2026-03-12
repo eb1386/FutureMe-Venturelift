@@ -59,6 +59,11 @@ a, a:visited, a:hover, a:active { text-decoration:none; }
   transition:background .2s, transform .2s;
 }
 .nav-apply-btn:hover { background:#a8021f; transform:translateY(-1px); }
+@media(max-width:600px) {
+  #topnav { justify-content:center; }
+  .nav-tabs { flex:0 0 auto; }
+  .nav-tab { padding:0 clamp(10px,4vw,20px); font-size:.52rem; }
+}
 
 /* ─── VIEW SYSTEM ─────────────────────────────── */
 .view {
@@ -179,13 +184,7 @@ a, a:visited, a:hover, a:active { text-decoration:none; }
   background:#fff;
 }
 @media(max-width:600px) {
-  .hyphen-indicator {
-    flex-direction:row; align-items:flex-end;
-    right:auto; top:auto; bottom:clamp(18px,3.5vh,32px); left:50%;
-    transform:translateX(-50%); gap:8px;
-  }
-  .hyphen-indicator span { width:2px; height:clamp(12px,2vh,20px); transform-origin:bottom center; }
-  .hyphen-indicator span.active { height:clamp(22px,4vh,38px); }
+  .hyphen-indicator { display:none; }
 }
 
 .question-stage {
@@ -195,7 +194,7 @@ a, a:visited, a:hover, a:active { text-decoration:none; }
 }
 @media(max-width:600px) {
   .question-stage {
-    padding:20px 16px 80px 16px;
+    padding:20px 16px 20px 16px;
     align-items:center;
     justify-content:center;
     text-align:center;
@@ -789,7 +788,7 @@ const QUESTIONS = [
   { label:'MORTGAGE',    text:'Is right now even a good time to get a mortgage?' },
 ];
 const TOTAL     = QUESTIONS.length;
-const PIN_EXTRA = TOTAL * 0.28;
+const PIN_EXTRA = TOTAL * 0.22;
 const qEl       = document.getElementById('questionText');
 
 /* Build hyphen indicators — one <span> per question */
